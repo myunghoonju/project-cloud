@@ -1,0 +1,15 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: zuul-service
+
+zuul:
+  routes:
+    client-one:
+      path: /client-one/**
+      url: http://localhost:8081
+    client-two:
+      path: /client-two/**
+      url: http://localhost:8082

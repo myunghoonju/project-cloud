@@ -1,0 +1,57 @@
+server:
+  port: 8000
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            msg: "my cloud gateway filter"
+            preLog: true
+            postLog: true
+      routes:
+        - id: user-application
+          uri: lb://USER-APPLICATION
+          predicates:
+            - Path=/user-application/**
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-application/(?<segment>.*), /$\{segment}
+
+        - id: user-application
+          uri: lb://USER-APPLICATION
+          predicates:
+            - Path=/user-application/**
+            - Method=GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-application/(?<segment>.*), /$\{segment}
+#            - name: AuthFilter
+#            - name: CustomFilter
+#            - name: LogFilter
+#              args:
+#                msg: log filter init
+#                preLog: true
+#                postLog: true
+#            - AddRequestHeader=first-req, first-req-val
+#            - AddResponseHeader=first-res, first-res-val
+
+        - id: user-application
+          uri: lb://USER-APPLICATION
+          predicates:
+            - Path=/user-application/actuator/**
+            - Method=POST, GET
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-application/(?<segment>.*), /$\{segment}

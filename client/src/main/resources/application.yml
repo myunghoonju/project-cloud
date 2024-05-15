@@ -1,0 +1,46 @@
+server:
+  port: 8989
+#  port: 0 # random port assignment every time running
+
+spring:
+  application:
+    name: user-application
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    config:
+      enabled: true
+      bootstrap: true
+  datasource:
+    hikari:
+      jdbc-url: jdbc:h2:tcp://localhost/~/testdb
+      username: sa
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}} # let discovery know each tomcat server
+  client:
+    register-with-eureka: true
+    fetch-registry: true # to receive information from eureka server constantly
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+
+info:
+  message: info message
+
+logging:
+  level:
+    com.app.client: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh
