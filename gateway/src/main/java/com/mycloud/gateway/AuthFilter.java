@@ -42,7 +42,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
             HttpHeaders headers = req.getHeaders();
             String header = headers.get(HttpHeaders.AUTHORIZATION).get(0);
-            String token = header.replace("Bearer", "");
+            String token = header.replace("Bearer ", "");
             if (invalidated(token)) {
                 return onError(ex, "empty token", HttpStatus.UNAUTHORIZED);
             }
@@ -63,7 +63,8 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
     }
 
     private boolean invalidated(String token) {
-        String secret = env.getProperty("token.secret");
+        // String secret = env.getProperty("token.secret");
+        String secret = "my_over_forty_length_of_letters_for_secret_message";
         if (StringUtils.hasText(secret)) {
             String o = Jwts.parserBuilder()
                            .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))

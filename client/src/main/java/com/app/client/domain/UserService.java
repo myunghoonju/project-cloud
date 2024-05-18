@@ -8,8 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.app.client.config.Crypt;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -17,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 public class UserService implements UserDetailsService {
 
     private final UserRepository repository;
-    private final Crypt crypt;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -29,9 +26,6 @@ public class UserService implements UserDetailsService {
     }
 
     public void save(UserVO userVO) {
-        String encoded = crypt.encode(userVO.getPassword());
-        userVO.setPassword(encoded);
-
         repository.save(userVO.toEntity());
     }
 

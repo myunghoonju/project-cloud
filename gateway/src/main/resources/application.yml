@@ -37,7 +37,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-application/(?<segment>.*), /$\{segment}
-#            - name: AuthFilter
+            - name: AuthFilter
 #            - name: CustomFilter
 #            - name: LogFilter
 #              args:

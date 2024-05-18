@@ -41,10 +41,15 @@ public class ClientController {
         return "fist-service - " + env.getProperty("local.server.port");
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<UserVO> login(@RequestBody UserVO vo) {
+        return ResponseEntity.status(HttpStatus.OK).body(vo);
+    }
+
     @PostMapping("/user")
-    public ResponseEntity<String> save(@RequestBody @Valid UserVO vo) {
+    public ResponseEntity<UserVO> save(@RequestBody @Valid UserVO vo) {
         service.save(vo);
-        return ResponseEntity.status(HttpStatus.CREATED).body(vo.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(vo.toRes());
     }
 
     @GetMapping("/user/{id}")

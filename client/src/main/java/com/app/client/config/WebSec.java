@@ -14,11 +14,9 @@ import com.app.client.domain.UserService;
 public class WebSec extends WebSecurityConfigurerAdapter {
 
     private final UserService service;
-    private final Crypt crypt;
 
-    public WebSec(UserService service, Crypt crypt) {
+    public WebSec(UserService service) {
         this.service = service;
-        this.crypt = crypt;
     }
 
     // 인증
@@ -33,12 +31,12 @@ public class WebSec extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.headers().frameOptions().disable();
 
-        http.authorizeRequests().antMatchers("/users/**", "/h2-console").permitAll();
-        http.addFilter(authFilter(crypt, service));
+        http.authorizeRequests().antMatchers("/users/**", "/h2-console", "/error").permitAll();
+        http.addFilter(authFilter(service));
     }
 
-    private AuthFilter authFilter(Crypt crypt, UserService service) throws Exception{
-        AuthFilter authFilter = new AuthFilter(crypt, service);
+    private AuthFilter authFilter(UserService service) throws Exception{
+        AuthFilter authFilter = new AuthFilter(service);
         authFilter.setAuthenticationManager(authenticationManager());
 
         return authFilter;

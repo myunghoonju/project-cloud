@@ -26,12 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuthFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final Crypt crypt;
-
     private final UserService service;
 
-    public AuthFilter(Crypt crypt, UserService service) {
-        this.crypt = crypt;
+    public AuthFilter(UserService service) {
         this.service = service;
     }
 

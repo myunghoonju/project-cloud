@@ -2,6 +2,8 @@ package com.app.client.domain;
 
 import javax.validation.constraints.NotBlank;
 
+import com.app.client.util.Crypt;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,12 +23,25 @@ public class UserVO {
     @NotBlank
     private String password;
 
-
-    public ClientUser toEntity() {
-        return ClientUser.builder().name(name).email(email).password(password).build();
+    public String password() {
+        return Crypt.encode(this.password);
     }
 
-    public static UserVO toRes(ClientUser MUser) {
-        return new UserVO(MUser.getName(), MUser.getEmail(), MUser.getPassword());
+    public ClientUser toEntity() {
+        return ClientUser.builder()
+                         .name(getName())
+                         .email(getEmail())
+                         .password(password())
+                         .build();
+    }
+
+    public static UserVO toRes(ClientUser clientUser) {
+        return new UserVO(clientUser.getName(),
+                          clientUser.getEmail(),
+                          clientUser.getPassword());
+    }
+
+    public UserVO toRes() {
+        return new UserVO(getName(), getEmail(), password());
     }
 }
