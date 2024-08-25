@@ -15,10 +15,10 @@ spring:
       enabled: true
       bootstrap: true
   datasource:
-    hikari:
-      jdbc-url: jdbc:h2:tcp://localhost/~/testdb
-      username: sa
-    driver-class-name: org.h2.Driver
+    url: jdbc:mysql://localhost:3306/cloud?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+    username: local_rdb_master
+    password: local_rdb
+    driver-class-name: com.mysql.cj.jdbc.Driver
   h2:
     console:
       enabled: true
@@ -43,4 +43,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, busrefresh
+        include: health, busrefresh, refresh

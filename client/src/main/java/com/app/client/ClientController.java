@@ -1,6 +1,6 @@
 package com.app.client;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -31,14 +31,13 @@ public class ClientController {
     @GetMapping("/health")
     public String health() {
         String secret = env.getProperty("token.secret");
-        return "health " + msg + " secret " + secret;
+        String env = this.env.getProperty("env");
+        return "health " + msg + " secret " + secret + "\n env " + env;
     }
 
     @GetMapping("/welcome")
-    public String welcome(@RequestHeader("first-req") String firstReq) {
-
-        System.err.println(firstReq);
-        return "fist-service - " + env.getProperty("local.server.port");
+    public String welcome() {
+        return ("fist-service - ");
     }
 
     @PostMapping("/login")

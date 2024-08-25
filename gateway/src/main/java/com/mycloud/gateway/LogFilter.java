@@ -3,12 +3,10 @@ package com.mycloud.gateway;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.OrderedGatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.core.Ordered;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 
-import com.mycloud.gateway.GlobalFilter.GlobalConfig;
 import com.mycloud.gateway.LogFilter.LogConfig;
 
 import lombok.Getter;
@@ -25,7 +23,20 @@ public class LogFilter extends AbstractGatewayFilterFactory<LogConfig> {
 
     @Override
     public GatewayFilter apply(LogConfig globalConfig) {
-        return new OrderedGatewayFilter((ex, chin) -> {
+        return new OrderedGatewayFilter(delegate(globalConfig), 3);
+    }
+
+    @Getter @Setter
+    @NoArgsConstructor
+    public static class LogConfig {
+        private String msg;
+        private boolean preLog;
+        private boolean postLog;
+    }
+
+
+    private GatewayFilter delegate(LogConfig globalConfig) {
+        return (ex, chin) -> {
             ServerHttpRequest req = ex.getRequest();
             ServerHttpResponse res = ex.getResponse();
             System.err.println("LogFilter msg: " + globalConfig.getMsg());
@@ -35,19 +46,11 @@ public class LogFilter extends AbstractGatewayFilterFactory<LogConfig> {
             }
 
             return chin.filter(ex)
-                       .then(Mono.fromRunnable(() -> {
-                           if (globalConfig.postLog) {
-                               System.err.println("LogFilter res status" + res.getStatusCode());
-                           }
-                       }));
-        }, 3);
-    }
-
-    @Getter @Setter
-    @NoArgsConstructor
-    public static class LogConfig {
-        private String msg;
-        private boolean preLog;
-        private boolean postLog;
+                    .then(Mono.fromRunnable(() -> {
+                        if (globalConfig.postLog) {
+                            System.err.println("LogFilter res status" + res.getStatusCode());
+                        }
+                    }));
+        };
     }
 }
