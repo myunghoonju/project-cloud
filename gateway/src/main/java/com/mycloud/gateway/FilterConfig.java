@@ -39,7 +39,7 @@ public class FilterConfig {
 
     private Function<GatewayFilterSpec, UriSpec> second(SecondGatewayFilterFactory secondFilter, LogFilterGatewayFilterFactory logFilter) {
         return config -> config.rewritePath("/user-application/(?<segment>.*)", "/${segment}")
-                               .filters(secondFilter.apply(s -> s.setMethod(HttpMethod.POST)),
+                               .filters(secondFilter.apply(s -> s.setMethod(HttpMethod.GET)),
                                         logFilter.apply(l -> l.setPreLog(true).setPostLog(true).setMsg("hi")));
     }
 }

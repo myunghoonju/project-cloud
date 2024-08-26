@@ -1,5 +1,6 @@
 package com.mycloud.gateway;
 
+import com.ctc.wstx.shaded.msv_core.util.Uri;
 import com.mycloud.gateway.annotation.GateWayFilterFactory;
 import lombok.Getter;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -8,6 +9,9 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.web.server.ServerWebExchange;
+
+import java.net.URI;
 
 @GateWayFilterFactory
 public class SecondGatewayFilterFactory extends AbstractGatewayFilterFactory<SecondGatewayFilterFactory.Config> {
@@ -32,10 +36,12 @@ public class SecondGatewayFilterFactory extends AbstractGatewayFilterFactory<Sec
     return new OrderedGatewayFilter((exchange, chain) -> {
       System.err.println("SecondGatewayFilterFactory");
       ServerHttpRequest request = exchange.getRequest();
-      return chain.filter(exchange.mutate()
-                                  .request(request.mutate()
-                                                  .method(config.getMethod()).build())
-                                  .build());
+      ServerWebExchange xxx = exchange.mutate().request(request.mutate().uri(URI.create("http://localhost:8989")).path("/welcome").method(config.getMethod()).build()).build();
+      return chain.filter(xxx);
+//      return chain.filter(exchange.mutate()
+//                                  .request(request.mutate()
+//                                                  .method(config.getMethod()).build())
+//                                  .build());
     }, Ordered.HIGHEST_PRECEDENCE);
   }
 }

@@ -37,7 +37,7 @@ public class ClientController {
 
     @GetMapping("/welcome")
     public String welcome() {
-      throw new RuntimeException();
+        return ("GetMapping welcome");
 
     }
 
