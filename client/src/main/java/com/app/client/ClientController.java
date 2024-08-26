@@ -37,7 +37,13 @@ public class ClientController {
 
     @GetMapping("/welcome")
     public String welcome() {
-        return ("fist-service - ");
+      throw new RuntimeException();
+
+    }
+
+    @PostMapping("/welcome2")
+    public String welcome2() {
+        return ("fist-service - 2");
     }
 
     @PostMapping("/login")

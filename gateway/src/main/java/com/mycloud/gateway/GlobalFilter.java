@@ -1,5 +1,6 @@
 package com.mycloud.gateway;
 
+import com.mycloud.gateway.annotation.GateWayFilterFactory;
 import lombok.Getter;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreakerFactory;
@@ -7,10 +8,15 @@ import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-@Component
+import java.net.URI;
+
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.addOriginalRequestUrl;
+
+@GateWayFilterFactory
 public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Config> {
 
     private final ReactiveCircuitBreakerFactory reactiveCircuitBreakerFactory;
@@ -32,14 +38,17 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
             }
             ReactiveCircuitBreaker aaa = reactiveCircuitBreakerFactory.create("aaa");
             return aaa.run(chin.filter(ex)
-                    .then(Mono.fromRunnable(() -> {
-                        if (globalConfig.postLog) {
-                            System.err.println("GlobalFilter res status" + res.getStatusCode());
-                        }
-                    })), throwable -> {
-                System.err.println("reactiveCircuitBreakerFactory " + throwable.getMessage());
-                return Mono.error(throwable);
-            });
+                               .then(Mono.fromRunnable(() -> {
+                                                                if (globalConfig.postLog) {
+                                                                    System.err.println("GlobalFilter res status" + res.getStatusCode());
+                                                                }})),
+                               throwable -> {
+                                               addOriginalRequestUrl(ex,req.getURI());
+
+                                               ServerWebExchange modified = ex.mutate().request(ex.getRequest().mutate().uri(URI.create("https://www.naver.com")).path("/").build()).build();
+                                               modified.getAttributes().put(GATEWAY_REQUEST_URL_ATTR, "https://www.naver.com");
+                                               System.err.println("reactiveCircuitBreakerFactory " + throwable.getMessage());
+                                               return chin.filter(modified);});
         };
     }
 
