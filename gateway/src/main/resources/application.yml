@@ -11,6 +11,18 @@ eureka:
 spring:
   application:
     name: api-gateway
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 3000 #milliseconds
+        response-timeout: 3s #Duration(sec)
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
 #  cloud:
 #    gateway:
 #      default-filters:

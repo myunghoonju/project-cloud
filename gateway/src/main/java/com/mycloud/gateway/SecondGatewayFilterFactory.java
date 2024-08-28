@@ -1,6 +1,5 @@
 package com.mycloud.gateway;
 
-import com.ctc.wstx.shaded.msv_core.util.Uri;
 import com.mycloud.gateway.annotation.GateWayFilterFactory;
 import lombok.Getter;
 import org.springframework.cloud.gateway.filter.GatewayFilter;

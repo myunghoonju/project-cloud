@@ -6,22 +6,21 @@ import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreakerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.web.server.ServerWebExchange;
+import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
-
-import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
-import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.addOriginalRequestUrl;
+import java.nio.charset.StandardCharsets;
 
 @GateWayFilterFactory
-public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Config> {
+public class FirstGatewayFilterFactory extends AbstractGatewayFilterFactory<FirstGatewayFilterFactory.Config> {
 
     private final ReactiveCircuitBreakerFactory reactiveCircuitBreakerFactory;
 
-    public GlobalFilter(ReactiveCircuitBreakerFactory reactiveCircuitBreakerFactory) {
+    public FirstGatewayFilterFactory(ReactiveCircuitBreakerFactory reactiveCircuitBreakerFactory) {
       super(Config.class);
       this.reactiveCircuitBreakerFactory = reactiveCircuitBreakerFactory;
     }
@@ -29,13 +28,14 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
     @Override
     public GatewayFilter apply(Config globalConfig) {
         return (ex, chin) -> {
-            ServerHttpRequest req = ex.getRequest();
-            ServerHttpResponse res = ex.getResponse();
-            System.err.println("GlobalFilter msg: " + globalConfig.getMsg());
+          ServerHttpRequest req = ex.getRequest();
+          ServerHttpResponse res = ex.getResponse();
+          System.err.println("GlobalFilter msg: " + globalConfig.getMsg());
 
-            if (globalConfig.preLog) {
-                System.err.println("GlobalFilter req id: " + req.getId());
-            }
+          if (globalConfig.preLog) {
+            System.err.println("GlobalFilter req id: " + req.getId());
+          }
+
             ReactiveCircuitBreaker aaa = reactiveCircuitBreakerFactory.create("aaa");
             return aaa.run(chin.filter(ex)
                                .then(Mono.fromRunnable(() -> {
@@ -43,12 +43,12 @@ public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Conf
                                                                     System.err.println("GlobalFilter res status" + res.getStatusCode());
                                                                 }})),
                                throwable -> {
-                                               addOriginalRequestUrl(ex,req.getURI());
-
-                                               ServerWebExchange modified = ex.mutate().request(ex.getRequest().mutate().uri(URI.create("https://www.naver.com")).path("/").build()).build();
-                                               modified.getAttributes().put(GATEWAY_REQUEST_URL_ATTR, "https://www.naver.com");
-                                               System.err.println("reactiveCircuitBreakerFactory " + throwable.getMessage());
-                                               return chin.filter(modified);});
+                                               ServerHttpResponseDecorator decorator = new ServerHttpResponseDecorator(res);
+                                               decorator.setStatusCode(HttpStatus.OK);
+                                               DataBuffer dataBuffer = decorator.bufferFactory().wrap("newResponseBody".getBytes(StandardCharsets.UTF_8));
+                                               decorator.writeWith(Mono.just(dataBuffer)).subscribe();
+                                               System.err.println("reactiveCircuitBreakerFactory ");
+                                 return chin.filter( ex.mutate().response(decorator).build());});
         };
     }
 

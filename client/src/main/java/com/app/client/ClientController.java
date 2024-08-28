@@ -1,7 +1,9 @@
 package com.app.client;
 
+import com.app.client.domain.UserService;
+import com.app.client.domain.UserVO;
 import jakarta.validation.Valid;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -10,13 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.app.client.domain.UserService;
-import com.app.client.domain.UserVO;
-
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,9 +33,8 @@ public class ClientController {
     }
 
     @GetMapping("/welcome")
-    public String welcome() {
-        return ("GetMapping welcome");
-
+    public String welcome(@RequestParam(name = "posType") String type) {
+        return "welcome " + msg + " " + type;
     }
 
     @PostMapping("/welcome2")
