@@ -34,7 +34,7 @@ public class ClientController {
 
     @GetMapping("/welcome")
     public String welcome(@RequestParam(name = "posType") String type) {
-        return "welcome " + msg + " " + type;
+        throw new RuntimeException();
     }
 
     @PostMapping("/welcome2")
