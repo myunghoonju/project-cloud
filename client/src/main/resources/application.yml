@@ -22,15 +22,15 @@ spring:
   h2:
     console:
       enabled: true
-
-eureka:
-  instance:
-    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}} # let discovery know each tomcat server
-  client:
-    register-with-eureka: true
-    fetch-registry: true # to receive information from eureka server constantly
-    service-url:
-      defaultZone: http://127.0.0.1:8761/eureka
+#
+#eureka:
+#  instance:
+#    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}} # let discovery know each tomcat server
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true # to receive information from eureka server constantly
+#    service-url:
+#      defaultZone: http://127.0.0.1:8761/eureka
 
 info:
   message: info message
