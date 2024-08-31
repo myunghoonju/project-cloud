@@ -25,10 +25,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 //	begin resilience4j related libraries
-	implementation 'org.springframework:spring-aop'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'io.github.resilience4j:resilience4j-spring-boot2:1.7.1'
-	implementation 'io.github.resilience4j:resilience4j-all:1.7.1'
+	implementation 'io.github.resilience4j:resilience4j-spring-boot2:1.7.0'
+	implementation 'io.github.resilience4j:resilience4j-all:1.7.0'
 //	end resilience4j related libraries
 
 	compileOnly 'org.projectlombok:lombok:1.18.20'

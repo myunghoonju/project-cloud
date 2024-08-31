@@ -1,16 +1,19 @@
 server:
   port: 8888
-#  port: 0 # random port assignment every time running
 
 spring:
   application:
     name: client-two
-#
-#eureka:
-#  instance:
-#    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}} # let discovery know each tomcat server
-#  client:
-#    register-with-eureka: true
-#    fetch-registry: true # to receive information from eureka server constantly
-#    service-url:
-#      defaultZone: http://127.0.0.1:8761/eureka
+
+resilience4j.retry:
+  configs:
+    default:
+      maxAttempts: 3
+      waitDuration: 500ms
+      retryExceptions:
+        - com.app.clienttwo.RetryException
+      ignoreExceptions:
+        - com.app.clienttwo.IgnoreException
+  instances:
+    retryService:
+      baseConfig: default
