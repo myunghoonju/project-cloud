@@ -5,15 +5,42 @@ spring:
   application:
     name: client-two
 
-resilience4j.retry:
-  configs:
-    default:
-      maxAttempts: 3
-      waitDuration: 500ms
-      retryExceptions:
-        - com.app.clienttwo.RetryException
-      ignoreExceptions:
-        - com.app.clienttwo.IgnoreException
-  instances:
-    retryService:
-      baseConfig: default
+resilience4j:
+  retry:
+    instances:
+      retryService:
+        base-config: default
+    configs:
+      default:
+        max-attempts: 10
+        wait-duration: 1s
+        retry-exceptions:
+          - com.app.clienttwo.RetryException
+        ignore-exceptions:
+          - com.app.clienttwo.IgnoreException
+
+  circuitbreaker:
+    instances:
+      simpleCircuitBreaker:
+        base-config: default
+    configs:
+      default:
+        sliding-window-type: COUNT_BASED
+        minimum-number-of-calls: 7 # won't open till 7 calls
+        sliding-window-size: 10 # after min number of calls(7 calls) 10 calls to be evaluated
+        wait-duration-in-open-state: 10s # stay open for 10sec
+        failure-rate-threshold: 40 # to open circuitbreaker what percentage of sliding-window call to be failed
+        slow-call-duration-threshold: 3000ms # response timeout
+        slow-call-rate-threshold: 60 # to open circuit what rate of slow call according to sliding-window-size
+        permitted-number-of-calls-in-half-open-state: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+
+        event-consumer-buffer-size: 10 # for actuator ??
+
+        record-exceptions:
+          - java.lang.RuntimeException # count to change state
+        ignore-exceptions:
+          - com.app.clienttwo.IgnoreException # not to count to change state
+
+
+

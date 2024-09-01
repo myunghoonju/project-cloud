@@ -15,6 +15,7 @@ public class Control {
     private final Environment env;
 
     private final RetryService retryService;
+    private final CircuitBreakerService circuitBreakerService;
 
     @GetMapping("/welcome")
     public String welcome(@RequestHeader("second-req") String secondReq) {
@@ -27,5 +28,10 @@ public class Control {
     @GetMapping("/api-call")
     public String apiCall(@RequestParam String param) {
         return retryService.process(param);
+    }
+
+    @GetMapping("/call")
+    public String call(@RequestParam String param) throws InterruptedException {
+        return circuitBreakerService.process(param);
     }
 }
