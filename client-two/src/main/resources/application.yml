@@ -41,7 +41,7 @@ resilience4j:
         event-consumer-buffer-size: 10 # for actuator ??
 
         record-exceptions:
-          - java.lang.RuntimeException # count to change state
+          - com.app.clienttwo.RecordException # count to change state
         ignore-exceptions:
           - com.app.clienttwo.IgnoreException # not to count to change state
 

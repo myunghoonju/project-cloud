@@ -1,5 +1,6 @@
 package com.app.clienttwo;
 
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,14 +17,24 @@ public class CircuitBreakerService {
   }
 
 
-  private String fallback(String param, Exception ex) {
-    // fallback은 ignoreException이 발생해도 실행된다.
-    log.info("fallback! your request is {} ", param);
-    return "Recovered: " + ex.toString();
+  private String fallback(String param, RecordException ex) {
+    log.info("RecordException fallback! your request is {} ", param);
+    return "RecordException Recovered: " + ex.toString();
   }
+
+  private String fallback(String param, IgnoreException ex) {
+    log.info("IgnoreException fallback! your request is {} ", param);
+    return "IgnoreException Recovered: " + ex.toString();
+  }
+
+  // must be handled
+  private String fallback(String param, CallNotPermittedException ex) {
+    return "CallNotPermittedException Recovered: ";
+  }
+
   public String callServer(String param) throws InterruptedException {
     if ("a".equals(param)) {
-      throw new RuntimeException("record exception");
+      throw new RecordException("record exception");
     }
     else if ("b".equals(param)) {
       throw new IgnoreException("ignore exception");
