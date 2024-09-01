@@ -37,8 +37,9 @@ public class ClientController {
         throw new RuntimeException();
     }
 
-    @PostMapping("/welcome2")
-    public String welcome2() {
+    @GetMapping("/welcome2")
+    public String welcome2() throws InterruptedException {
+        Thread.sleep(100000L);
         return ("fist-service - 2");
     }
 
