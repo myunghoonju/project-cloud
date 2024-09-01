@@ -26,14 +26,17 @@ resilience4j:
     configs:
       default:
         sliding-window-type: COUNT_BASED
-        minimum-number-of-calls: 7 # won't open till 7 calls
+        minimum-number-of-calls: 7 # won't open till 7 calls (default: sliding-window-size, more than that is meaningless)
         sliding-window-size: 10 # after min number of calls(7 calls) 10 calls to be evaluated
         wait-duration-in-open-state: 10s # stay open for 10sec
         failure-rate-threshold: 40 # to open circuitbreaker what percentage of sliding-window call to be failed
         slow-call-duration-threshold: 3000ms # response timeout
         slow-call-rate-threshold: 60 # to open circuit what rate of slow call according to sliding-window-size
         permitted-number-of-calls-in-half-open-state: 5
-        automatic-transition-from-open-to-half-open-enabled: true
+
+        # false -> state closed when request comes in
+        # true -> state closed depends on wait-duration-in-open-state
+        automatic-transition-from-open-to-half-open-enabled: false
 
         event-consumer-buffer-size: 10 # for actuator ??
 
