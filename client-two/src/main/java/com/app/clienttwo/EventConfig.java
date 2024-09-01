@@ -20,9 +20,20 @@ public class EventConfig {
       @Override
       public void onEntryAddedEvent(EntryAddedEvent<CircuitBreaker> entryAddedEvent) {
         log.info("RegistryEventConsumer.onEntryAddedEvent");
+        CircuitBreaker.EventPublisher eventPublisher = entryAddedEvent.getAddedEntry().getEventPublisher();
         entryAddedEvent.getAddedEntry().getEventPublisher().onEvent(event -> log.info(event.toString()));
-        entryAddedEvent.getAddedEntry().getEventPublisher().onFailureRateExceeded(event -> log.info("{}", event.getEventType()));
 
+        eventPublisher.onEvent(event -> log.info("onEvent {}", event)); // every event published
+        eventPublisher.onSuccess(event -> log.info("onSuccess {}", event));
+        eventPublisher.onCallNotPermitted(event -> log.info("onCallNotPermitted {}", event));
+        eventPublisher.onError(event -> log.info("onError {}", event));
+        eventPublisher.onIgnoredError(event -> log.info("onIgnoredError {}", event));
+
+        // publish event to other replicates(better publishing open state only)
+        eventPublisher.onStateTransition(event -> log.info("onStateTransition {}", event));
+
+        eventPublisher.onSlowCallRateExceeded(event -> log.info("onSlowCallRateExceeded {}", event));
+        eventPublisher.onFailureRateExceeded(event -> log.info("onFailureRateExceeded {}", event));
       }
 
       @Override
