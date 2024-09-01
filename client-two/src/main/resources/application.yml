@@ -38,12 +38,31 @@ resilience4j:
         # true -> state closed depends on wait-duration-in-open-state
         automatic-transition-from-open-to-half-open-enabled: false
 
-        event-consumer-buffer-size: 10 # for actuator ??
+        event-consumer-buffer-size: 10 # /actuator/circuitbreakerevents lists
 
         record-exceptions:
           - com.app.clienttwo.RecordException # count to change state
         ignore-exceptions:
           - com.app.clienttwo.IgnoreException # not to count to change state
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
+  health:
+    diskspace:
+      enabled: false
+    circuitbreakers:
+      enabled: true
+
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 
 
