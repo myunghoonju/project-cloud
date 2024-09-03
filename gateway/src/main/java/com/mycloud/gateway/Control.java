@@ -11,9 +11,10 @@ import java.util.Map;
 public class Control {
 
   @GetMapping("/fallback")
-  public void fallback(ServerWebExchange exchange) {
+  public String fallback(ServerWebExchange exchange) {
     Map<String, Object> attributes = exchange.getAttributes();
     Throwable t = exchange.getAttribute(ServerWebExchangeUtils.CIRCUITBREAKER_EXECUTION_EXCEPTION_ATTR);
     System.err.println("fallback" + t.getMessage());
+    return "FALLBACK";
   }
 }
