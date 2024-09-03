@@ -2,6 +2,7 @@ package com.app.client;
 
 import com.app.client.domain.UserService;
 import com.app.client.domain.UserVO;
+import com.app.client.dto.WelcomeDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,10 +40,14 @@ public class ClientController {
         throw new RuntimeException();
     }
 
+    @GetMapping("/welcome2/aaa")
+    public List<WelcomeDto> welcomeaaa() {
+        return List.of(new WelcomeDto("TEST", "PASSWORD"));
+    }
+
     @GetMapping("/welcome2")
-    public String welcome2() throws InterruptedException {
-        Thread.sleep(100000L);
-        return ("fist-service - 2");
+    public WelcomeDto welcome2() {
+        return new WelcomeDto("TEST", "PASSWORD");
     }
 
     @PostMapping("/login")

@@ -1,5 +1,7 @@
 package com.mycloud.gateway;
 
+import org.jetbrains.annotations.NotNull;
+import org.springframework.cloud.gateway.filter.factory.rewrite.RewriteFunction;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.GatewayFilterSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -8,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Configuration
@@ -56,7 +59,7 @@ public class FilterConfig {
                                            SecondGatewayFilterFactory secondFilter,
                                            LogFilterGatewayFilterFactory logFilter) {
         return builder.routes()
-                      .route(it -> it.path("/user-application/welcome2")
+                      .route(it -> it.path("/user-application/2/**")
                                      .filters(second(secondFilter, logFilter))
                                      .uri("http://localhost:8989"))
                       .build();
@@ -71,10 +74,16 @@ public class FilterConfig {
     }
 
     private Function<GatewayFilterSpec, UriSpec> second(SecondGatewayFilterFactory secondFilter, LogFilterGatewayFilterFactory logFilter) {
-        return config -> config.rewritePath("/user-application/(?<segment>.*)", "/${segment}")
+        return config -> config.rewritePath("/user-application/2/(?<segment>.*)", "/${segment}")
                                .addRequestParameter("posType", "pos")
+                               .modifyResponseBody(Object.class, Object.class, ResponseBodyUtil::reWrite)
+//                               .modifyResponseBody(List.class, List.class, reWriteFunction2())
                                .filters(secondFilter.apply(s -> s.setMethod(HttpMethod.GET)))
                                .circuitBreaker(it -> it.setName("simpleCircuitBreaker")
                                                        .setFallbackUri("forward:/fallback"));
+    }
+
+    private static RewriteFunction<List, List> reWriteFunction2() {
+        return (exchange, list) -> ResponseBodyUtil.reWritea(list);
     }
 }
