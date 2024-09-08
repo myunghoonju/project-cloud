@@ -19,7 +19,7 @@ public class FilterConfig {
     public RouteLocator firstRouteLocator(RouteLocatorBuilder builder,
                                           FirstGatewayFilterFactory firstFilter) {
         return builder.routes()
-                      .route("user-application", it -> it.path("/user-application/welcome")
+                      .route("user-application", it -> it.path("/client-one/**")
                                                             .filters(first(firstFilter))
                                                             .uri("http://localhost:8989"))
                       .build();
@@ -66,7 +66,7 @@ public class FilterConfig {
     }
 
     private Function<GatewayFilterSpec, UriSpec> first(FirstGatewayFilterFactory firstGatewayFilterFactory) {
-        return config -> config.rewritePath("/user-application/(?<segment>.*)", "/${segment}")
+        return config -> config.rewritePath("/client-one/(?<segment>.*)", "/${segment}")
                                .addRequestParameter("posType", "pos")
                                .addRequestHeader("first-req", "first-req-val")
                                .filter(firstGatewayFilterFactory.apply(g -> g.setMsg("msg").setPreLog(true).setPostLog(true)));

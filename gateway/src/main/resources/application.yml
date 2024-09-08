@@ -9,6 +9,8 @@ server:
 #      defaultZone: http://localhost:8761/eureka
 
 spring:
+  reactor:
+    context-propagation: auto
   rabbitmq:
     host: localhost
     port: 5672
@@ -48,24 +50,27 @@ resilience4j:
           - java.util.concurrent.TimeoutException
           - java.net.ConnectException
 
+logging:
+  level:
+    com.app.client: DEBUG
+  pattern:
+    correlation: '%5p [%X{traceId:-},%X{spanId:-}]'
+
 management:
+  tracing:
+    sampling:
+      probability: 1.0
+    propagation:
+      consume: B3
+      produce: B3
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+
   endpoints:
     web:
       exposure:
-        include: '*'
-  endpoint:
-    health:
-      show-details: always
-
-  health:
-    diskspace:
-      enabled: false
-    circuitbreakers:
-      enabled: true
-
-  metrics:
-    tags:
-      application: ${spring.application.name}
+        include: "*"
 
 #  cloud:
 #    gateway:

@@ -2,11 +2,14 @@ package com.mycloud.gateway;
 
 import com.mycloud.gateway.annotation.GateWayFilterFactory;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import reactor.core.publisher.Mono;
 
+@Slf4j
 @GateWayFilterFactory
 public class FirstGatewayFilterFactory extends AbstractGatewayFilterFactory<FirstGatewayFilterFactory.Config> {
 
@@ -20,12 +23,9 @@ public class FirstGatewayFilterFactory extends AbstractGatewayFilterFactory<Firs
         return (ex, chin) -> {
           ServerHttpRequest req = ex.getRequest();
           ServerHttpResponse res = ex.getResponse();
-          System.err.println("GlobalFilter msg: " + globalConfig.getMsg());
+          log.info("GlobalFilter req: {}", globalConfig.getMsg());
 
-          if (globalConfig.preLog) {
-            System.err.println("GlobalFilter req id: " + req.getId());
-          }
-          return chin.filter(ex);
+          return chin.filter(ex).then(Mono.fromRunnable(() -> log.info("GlobalFilter res: {}", globalConfig.getMsg())));
 
 //            ReactiveCircuitBreaker aaa = reactiveCircuitBreakerFactory.create("aaa");
 //            return aaa.run(chin.filter(ex)
