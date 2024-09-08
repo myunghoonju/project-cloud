@@ -1,6 +1,5 @@
 package com.mycloud.gateway;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.cloud.gateway.filter.factory.rewrite.RewriteFunction;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.GatewayFilterSpec;

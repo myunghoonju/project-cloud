@@ -1,18 +1,18 @@
-spring:
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-  cloud:
-    config:
-      url: http://127.0.0.1:8888
-      name: gateway-application
-  profiles:
-    active: prod
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health, busrefresh
+#spring:
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: guest
+#    password: guest
+#  cloud:
+#    config:
+#      url: http://127.0.0.1:8888
+#      name: gateway-application
+#  profiles:
+#    active: prod
+#
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: health, busrefresh
