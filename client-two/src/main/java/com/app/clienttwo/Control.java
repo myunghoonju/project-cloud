@@ -24,6 +24,11 @@ public class Control {
         return "second-service - " + env.getProperty("local.server.port");
     }
 
+    @GetMapping("/test")
+    public String welcome() {
+        return "second-service - " + env.getProperty("local.server.port");
+    }
+
 
     @GetMapping("/api-call")
     public String apiCall(@RequestParam String param) {

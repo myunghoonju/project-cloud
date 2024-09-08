@@ -5,15 +5,18 @@ server:
 spring:
   application:
     name: user-application
+  zipkin:
+    base-url: http://localhost:9411
+    enabled: true
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
     password: guest
-  cloud:
-    config:
-      enabled: true
-      bootstrap: true
+#  cloud:
+#    config:
+#      enabled: true
+#      bootstrap: true
   datasource:
     url: jdbc:mysql://localhost:3306/cloud?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
     username: local_rdb_master
@@ -37,10 +40,22 @@ info:
 
 logging:
   level:
-    com.app.client: INFO
+    com.app.client: DEBUG
+  pattern:
+    correlation: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
 
 management:
+  tracing:
+    sampling:
+      probability: 1.0
+    propagation:
+      consume: B3
+      produce: B3
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+
   endpoints:
     web:
       exposure:
-        include: health, busrefresh, refresh
+        include: "*"
