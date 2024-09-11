@@ -4,7 +4,9 @@ import com.app.client.domain.UserService;
 import com.app.client.domain.UserVO;
 import com.app.client.dto.WelcomeDto;
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -39,6 +41,26 @@ public class ClientController {
         String secret = env.getProperty("token.secret");
         String env = this.env.getProperty("env");
         return "health " + msg + " secret " + secret + "\n env " + env;
+    }
+
+    @PostMapping("/test")
+    public String test(@RequestBody TestDto test) {
+        return "test => " + test.getInput();
+    }
+
+    @PostMapping("/test2")
+    public String test2(@RequestBody String test) {
+        return "test2 => " + test;
+    }
+
+    @Getter @Setter
+    static class TestDto {
+        private String input;
+    }
+
+    @Getter @Setter
+    static class TestDto2 {
+        private List<String> input;
     }
 
     @GetMapping("/welcome")

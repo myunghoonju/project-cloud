@@ -9,7 +9,7 @@ zuul:
   routes:
     client-one:
       path: /client-one/**
-      url: http://localhost:8081
+      url: http://localhost:8989
     client-two:
       path: /client-two/**
-      url: http://localhost:8082
+      url: http://localhost:8989
