@@ -39,9 +39,7 @@ public class ClientController {
 
     @GetMapping("/health")
     public String health() {
-        String secret = env.getProperty("token.secret");
-        String env = this.env.getProperty("env");
-        return "health " + msg + " secret " + secret + "\n env " + env;
+        return "one";
     }
 
     @PostMapping("/test")

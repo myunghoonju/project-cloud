@@ -17,6 +17,12 @@ public class Control {
     private final RetryService retryService;
     private final CircuitBreakerService circuitBreakerService;
 
+    @GetMapping("/health")
+    public String health() {
+        return "two";
+    }
+
+
     @GetMapping("/welcome")
     public String welcome(@RequestHeader("second-req") String secondReq) {
         System.err.println(secondReq);
