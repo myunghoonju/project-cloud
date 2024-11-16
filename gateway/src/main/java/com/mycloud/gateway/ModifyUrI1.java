@@ -13,9 +13,9 @@ import java.util.Optional;
 
 @Slf4j
 @GateWayFilterFactory
-public class ModifyUrI extends AbstractChangeRequestUriGatewayFilterFactory<ModifyUrI.Config> {
+public class ModifyUrI1 extends AbstractChangeRequestUriGatewayFilterFactory<ModifyUrI1.Config> {
 
-  public ModifyUrI() {
+  public ModifyUrI1() {
     super(Config.class);
   }
 
@@ -29,14 +29,27 @@ public class ModifyUrI extends AbstractChangeRequestUriGatewayFilterFactory<Modi
     String path = exchange.getRequest().getURI().getPath();
     log.info("ModifyUrI determineRequestUri {} ", exchange.getRequest().getURI().getPath());
 
-    if (path.contains("/-")) {
+    if (path.contains("-one")) {
       String s1 = path.replaceFirst("/-one", "");
-      String s2 = s1.replaceFirst("/-two", "");
-      String s3 = s2.replaceFirst("/-three", "");
-      return Optional.of(URI.create("http://localhost:8989" + s3));
+      return Optional.of(URI.create("http://localhost:8989" + s1));
     }
 
-    return Optional.of(URI.create("http://localhost:8888" + path));
+    if (path.contains("-two")) {
+      String s1 = path.replaceFirst("/-two", "");
+      return Optional.of(URI.create("http://localhost:8989" + s1));
+    }
+
+    if (path.contains("-three")) {
+      if (path.contains("-three-half")) {
+        String s1 = path.replaceFirst("/-three-half", "");
+        return Optional.of(URI.create("http://localhost:8989" + s1));
+      }
+
+      String s1 = path.replaceFirst("/-three", "");
+      return Optional.of(URI.create("http://localhost:8989" + s1));
+    }
+
+   return Optional.of(URI.create("http://localhost:8888" + path));
   }
 
   @Getter @Setter

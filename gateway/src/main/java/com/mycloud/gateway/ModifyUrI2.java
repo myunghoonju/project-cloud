@@ -13,9 +13,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-// client - 8989
-// client-** - 8888
-
 @Slf4j
 @GateWayFilterFactory
 public class ModifyUrI2 extends AbstractChangeRequestUriGatewayFilterFactory<ModifyUrI2.Config> {
@@ -36,7 +33,7 @@ public class ModifyUrI2 extends AbstractChangeRequestUriGatewayFilterFactory<Mod
 
     MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
     List<String> type = queryParams.get("type");
-    if (type.get(0).equals("one")) {
+    if (type != null) {
       return Optional.of(URI.create("http://localhost:8989" + path));
     }
 

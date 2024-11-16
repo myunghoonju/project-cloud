@@ -14,23 +14,24 @@ public class FilterConfig {
 
     @Bean
     public RouteLocator firstRouteLocator(RouteLocatorBuilder builder,
-                                          ModifyUrI modifyUrI,
+                                          ModifyUrI1 modifyUrI,
                                           ModifyUrI2 modifyUrI2,
                                           FirstGatewayFilterFactory custom) {
         return builder.routes()
-                .route("user-application", it -> it.path("/client/**",
-                                                                          "/client-one/**",
-                                                                          "/client-two/**")
+                .route(it -> it.path("/client/**")
+                                             .filters(paramCondition(modifyUrI2, custom))
+                                             .uri("http://localhost:8989"))
+                .route("user-application", it -> it.path("/client-one/**",
+                                                                          "/client-two/**",
+                                                                          "/client-three/**",
+                                                                          "/client-three-half/**")
                         .filters(pathConfidion(modifyUrI, custom))
-                        .uri("http://localhost:8989"))
-                .route("user-application2", it -> it.path("/client/**")
-                        .filters(paramCondition(modifyUrI2, custom))
                         .uri("http://localhost:8989"))
                 .build();
 
     }
 
-    private Function<GatewayFilterSpec, UriSpec> pathConfidion(ModifyUrI modifyUrI,
+    private Function<GatewayFilterSpec, UriSpec> pathConfidion(ModifyUrI1 modifyUrI,
                                                                FirstGatewayFilterFactory custom) {
         return config -> config.rewritePath("/client(?<segment>.*)", "/${segment}")
                                                 .filters(modifyUrI.apply(g -> g.setName("modify uri")),
