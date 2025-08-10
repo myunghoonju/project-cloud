@@ -1,10 +1,15 @@
 server:
   port: 8989
-#  port: 0 # random port assignment every time running
 
 spring:
+  config:
+    import: optional:configserver:http://localhost:8888
+  cloud:
+    config:
+      label: release
   application:
     name: user-application
+
   zipkin:
     base-url: http://localhost:9411
     enabled: true
@@ -19,7 +24,7 @@ spring:
 #      bootstrap: true
   datasource:
     url: jdbc:mysql://localhost:3306/cloud?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
-    username: local_rdb_master
+    username: root
     password: local_rdb
     driver-class-name: com.mysql.cj.jdbc.Driver
   h2:

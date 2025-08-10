@@ -1,0 +1,67 @@
+server:
+  port: 0
+#  port: 0 # random port assignment every time running
+
+spring:
+  application:
+    name: user-application
+  config:
+    import: optional:configserver:http://localhost:8888
+  cloud:
+    config:
+      label: dev
+
+  zipkin:
+    base-url: http://localhost:9411
+    enabled: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+#  cloud:
+#    config:
+#      enabled: true
+#      bootstrap: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/cloud?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: local_rdb
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  h2:
+    console:
+      enabled: true
+#
+#eureka:
+#  instance:
+#    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}} # let discovery know each tomcat server
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true # to receive information from eureka server constantly
+#    service-url:
+#      defaultZone: http://127.0.0.1:8761/eureka
+
+info:
+  message: info message
+
+logging:
+  level:
+    com.app.client: DEBUG
+  pattern:
+    correlation: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+    propagation:
+      consume: B3
+      produce: B3
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+
+  endpoints:
+    web:
+      exposure:
+        include: "*"

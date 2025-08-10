@@ -9,11 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,15 +29,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientController {
 
-    private final Environment env;
     private final UserService service;
 
-    @Value("${info.message}")
+    @Value("${config}")
     private String msg;
 
     @GetMapping("/health")
     public String health() {
-        return "one";
+        return msg;
     }
 
     @PostMapping("/test")
