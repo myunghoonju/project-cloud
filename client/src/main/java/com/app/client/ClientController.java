@@ -36,9 +36,12 @@ public class ClientController {
     @Value("${config}")
     private String msg;
 
+    @Value("${config.string}")
+    private String stringVal;
+
     @GetMapping("/health")
     public String health() {
-        return msg;
+        return msg + " " + stringVal;
     }
 
     @PostMapping("/test")
