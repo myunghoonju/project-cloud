@@ -40,6 +40,13 @@ public class PropertyUpdater {
     contextRefresher.refreshEnvironment(); // fetch
     for (Map.Entry<String, Object> entry : flags.entrySet()) {
       scope.refresh(entry.getKey());
+//      if ("testProperty2".equals(entry.getKey())) {
+//        TestProperty2 value = (TestProperty2) entry.getValue();
+//        value.setMsg2("modified");
+//        value.setStringVal2("modified");
+//
+//        entry.setValue(value);
+//      }
     }
   }
 
