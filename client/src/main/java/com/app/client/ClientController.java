@@ -1,5 +1,8 @@
 package com.app.client;
 
+import com.app.client.config.refresh.PropertyUpdater;
+import com.app.client.config.refresh.TestProperty;
+import com.app.client.config.refresh.TestProperty2;
 import com.app.client.domain.UserService;
 import com.app.client.domain.UserVO;
 import com.app.client.dto.WelcomeDto;
@@ -8,8 +11,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -26,22 +27,24 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @Slf4j
-@RefreshScope
 @RestController
 @RequiredArgsConstructor
 public class ClientController {
 
     private final UserService service;
+    private final TestProperty testProperty;
+    private final TestProperty2 testProperty2;
+    private final PropertyUpdater propertyUpdater;
 
-    @Value("${config}")
-    private String msg;
-
-    @Value("${config.string}")
-    private String stringVal;
+    @GetMapping("/refresh")
+    public void refresh() {
+      propertyUpdater.updateProperties();
+    }
 
     @GetMapping("/health")
     public String health() {
-        return msg + " " + stringVal;
+      String stringVal = testProperty.getStringVal();
+      return testProperty2.getMsg2() + " " + stringVal;
     }
 
     @PostMapping("/test")
