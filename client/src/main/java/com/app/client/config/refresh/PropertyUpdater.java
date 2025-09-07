@@ -11,6 +11,7 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -34,7 +35,7 @@ public class PropertyUpdater {
 
   public void updateProperties() {
 //    contextRefresher.refresh();// fetch and recreate
-//    mentalModifyConfig();
+//    manualModifyConfig();
 
     Map<String, Object> flags = applicationContext.getBeansWithAnnotation(RefreshFlag.class);
     contextRefresher.refreshEnvironment(); // fetch
@@ -50,7 +51,7 @@ public class PropertyUpdater {
     }
   }
 
-  private void mentalModifyConfig() {
+  private void manualModifyConfig() {
     MutablePropertySources properties = environment.getPropertySources();
     boolean contains = properties.contains("configserver:user-application-dev");
     if (contains) {
